@@ -46,6 +46,7 @@ class CServer:
 
                         # Crear un nuevo socket para cada conexión
                         pollSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                        pollSock.settimeout(5)
                         pollSock.connect((board.IP, board.PORT))
 
                         # print("Socket conectado!")
@@ -97,10 +98,18 @@ class CServer:
                                 cursor.execute(update_query, (sensor.rawVal,))
 
                                 conn.commit()
-
-
-                
                     except Exception as e:
+                        if board.isBoardCon:
+                            board.isBoardCon=0
+                            drop_query = f"DROP TABLE {board.name}"
+                            with sqlite3.connect(self.db_path, check_same_thread=False) as conn:
+                                cursor = conn.cursor()
+                                cursor.execute(drop_query)
+                                conn.commit()
+                            
+                            self.conBoards = [boar for boar in self.conBoards if boar.name != board.name]
+
+
                         print(f"Error durante el polling con {board.IP}:{board.PORT}: {e}")
                     finally:
                         pollSock.close()
@@ -154,14 +163,19 @@ class CServer:
                     port=received_data['PORT']
                     remoteADD=received_data['remoteIP']
                     sensors = received_data['sensors']
+                    print(sensors)
                     sensorList=[]
                     for sensor in sensors:
                         sensorList.append(CSensor(sensor['name'], sensor['pin']))
-                    print(f"Name: {name}, Ip: {ip}Sensors: {sensorList}")
+                    
+                    
+                    for s in sensorList:
+                        print(f"Name: {name}, Ip: {ip}Sensors: {s.name}")
 
                     # Crear una nueva instancia de la placa
 
                     new_board = CESP32(name, ip, port, remoteADD, sensorList)
+                    new_board.isBoardCon = 1
                     self.isBoardCon=1
                     self.conBoards.append(new_board)
                     self.create_table_for_esp(name,sensorList)
@@ -176,7 +190,7 @@ class CServer:
                 conn.close()
 
                 
-    def create_table_for_esp(self, table_name,sensorList):
+    def create_table_for_esp(self, table_name, sensorList):
         """
         Crea una tabla en la base de datos SQLite con el nombre especificado.
         """
@@ -187,38 +201,34 @@ class CServer:
             cursor = conn.cursor()
             table_name = f'"{table_name}"'
 
-
             # Crear una lista de columnas dinámicamente basadas en sensorList
             sensor_columns = ", ".join([f'"{sensor.name}" REAL' for sensor in sensorList])
 
-            # Construir la sentencia CREATE TABLE
+            # Ejecutar el DROP TABLE en una consulta separada
+            drop_query = f"DROP TABLE IF EXISTS {table_name}"
+            cursor.execute(drop_query)
+
+            # Construir y ejecutar la sentencia CREATE TABLE
             create_table_query = f"""
-            CREATE TABLE IF NOT EXISTS {table_name} (
+            CREATE TABLE {table_name} (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 IP TEXT,
                 port INTEGER,
                 {sensor_columns}
             )
             """
-
-            # Ejecutar la sentencia SQL
             cursor.execute(create_table_query)
 
-
+            # Insertar valores iniciales si la tabla está vacía
             for sensor in sensorList:
-                # Query para insertar si está vacía
                 insert_query = f"""
                 INSERT INTO {table_name} (IP, port, "{sensor.name}")
                 SELECT ?, ?, ?
                 WHERE NOT EXISTS (
                     SELECT 1 FROM {table_name}
-                );
+                )
                 """
-
-                cursor.execute(insert_query, (0,0,0))
-            
-
-
+                cursor.execute(insert_query, (0, 0, 0))
 
             conn.commit()
             print(f"Tabla '{table_name}' creada correctamente en la base de datos.")
