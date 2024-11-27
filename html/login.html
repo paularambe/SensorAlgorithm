@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="stylessesion.css"> <!-- Asegúrate de que el archivo CSS esté en el mismo directorio o ajusta la ruta según corresponda -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="netflixLogo">
+            <a id="logo"><img src="logo_poly.png" alt="Logo Image"></a>
+          </div>
+    </header>
+    <div class="container">
+        <h2>Login</h2>
+        <form action="/cgi-bin/login.py" method="post">
+            <div class="input-container">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="input-container">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <input type="hidden" name="ip_address" id="ip_address" value="">
+            <div class="button-container">
+                <input id="login" type="submit" value="Login" onclick="redirectToLogin()">
+                <input id="register" type="submit" value="Register" onclick="redirectToRegister()">
+            </div>
+        </form>
+    </div>
+    <footer>
+        <p>&copy PolyFlix, Inc.</p>
+        <a href="https://www.facebook.com/profile.php?id=61553077526033&is_tour_dismissed=true"><i class="fab fa-facebook-square fa-2x logo" style="color: var(--dark);"></i></a>
+        <a href="https://www.instagram.com/pol.yflix/"><i class="fab fa-instagram fa-2x logo" style="color: var(--dark);"></i></a>
+        <a href="https://twitter.com/polyflix"><i class="fab fa-twitter fa-2x logo" style="color: var(--dark);"></i></a>
+        <a href="https://youtube.com/@PolyFlix?si=leBztwkdjZxI9sJg"><i class="fab fa-youtube fa-2x logo" style="color: var(--dark);"></i></a>
+        <p>Paul Aramberri Araiz &copy 2023</p>
+    </footer>
+    <script>
+        function redirectToLogin() {
+            window.location.href = "login.html";
+        }
+
+        function redirectToRegister() {
+            window.location.href = "register.html";
+        }
+    </script>
+</body>
+</html>

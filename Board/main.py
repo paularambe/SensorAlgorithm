@@ -41,10 +41,12 @@ def poll_task():
                     # Enviar información de los sensores como JSON
                     for sensor in thisBoard.sensors:
                         # Agregar los datos del sensor al diccionario principal
+                        print(f"Sensor: {sensor}")
                         data_out[sensor.name] = {
+                            
                             "rawVal": sensor.get_value()
                         }
-                        print("Valor: ",sensor.get_value())
+                        print(data_out)
                         
                     msgOut = json.dumps(data_out)
                     conn.send(msgOut.encode('utf-8'))  # Usar 'conn' para enviar
@@ -70,9 +72,9 @@ ip = wlan.ifconfig()[0]
 remoteAdd = '192.168.2.24'  # Dirección IP de tu servidor
 port = 138  # Puerto del servidor
 # Configuración de la placa
-name = "RoomJuan"
-sensors = [CSensor("Photoresistor", 32)]
-sensors.append(CSensor("Movement", 21))
+name = "RoomPaul"
+sensors = [CSensor("Button", 0)]
+# sensors.append(CSensor("Movement", 21))
 thisBoard = CESP32(name, ip, port, remoteAdd,sensors)
 
 # Clave para autenticación

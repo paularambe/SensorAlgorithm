@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado de Sensores</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #2c2c2c; /* Fondo gris oscuro */
+            font-family: Arial, sans-serif;
+        }
+
+        .frame {
+            border: 1px solid black;
+            background-color: #6a6a6a; /* Frame gris claro */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .status {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: gray;
+            border: 2px solid #000;
+        }
+
+        .circle.green {
+            background-color: green;
+        }
+
+        .mini-frame {
+            display: flex;
+            flex-direction: row; /* Elementos dentro del mini-frame alineados en fila */
+            justify-content: flex-start; /* Alinear los elementos hacia la izquierda */
+            align-items: center; /* Centrar verticalmente */
+            background-color: #b3b3b3; /* Gris claro */
+            padding: 10px;
+            gap: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="frames-container"></div>
+
+    
+
+    <script>
+        function updateCircle(index, state, id) {
+            let circle;  // Declara la variable circle en el ámbito de la función
+
+            // Verifica si el círculo con el ID correspondiente existe
+            if (index == 1) {
+                circle = document.getElementById(`circle-${id}`);
+            } else {
+                circle = document.getElementById(`circle1-${id}`);
+            }
+
+            console.log(`circle-${id}:`, circle);  // Verificar si el círculo es encontrado
+
+            // Verifica si el círculo existe antes de intentar manipularlo
+            if (circle) {
+                if (state === 1) {
+                    circle.classList.add("green");
+                } else {
+                    circle.classList.remove("green");
+                }
+            } else {
+                console.log(`No se encontró el círculo con id circle-${id}`);
+            }
+        }
+
+        function updateBoard(roomName) {
+            let board
+            board = document.getElementById('titleBoard')
+            if (board) {
+                board.textContent = roomName;
+            }
+        }
+
+
+        function createFrames(data) {
+            // Obtener el contenedor de los frames
+            const container = document.getElementById("frames-container");
+            
+            // Limpiar los frames previos
+            container.innerHTML = '';
+
+            // Iterar sobre cada "room" (habitación) en el objeto data
+            Object.keys(data).forEach((roomName, index) => {
+                // Crear un nuevo frame
+                const frame = document.createElement("div");
+                frame.classList.add("frame");
+                frame.id = `frameMaster-${index + 1}`;
+
+                // Crear el título del frame con el nombre de la habitación
+                const title = document.createElement("h2");
+                title.textContent = roomName;  // Nombre de la habitación
+                frame.appendChild(title);
+
+                // Obtener los dispositivos de la habitación
+                const device = data[roomName][0];
+                let nameSens = [];
+                let valSens = [];
+
+                // Crear un contenedor para los sensores de este dispositivo
+                const statusDiv = document.createElement("div");
+                statusDiv.classList.add("status");
+
+
+                const miniFrame = document.createElement("div");
+                miniFrame.classList.add("mini-frame");
+                // Crear el texto para el nombre del sensor
+                const label = document.createElement("span");
+                label.textContent = `IP: ${device['IP']}:${device['port']}`;
+                miniFrame.appendChild(label);
+                statusDiv.appendChild(miniFrame);
+
+
+                
+
+                // Iterar sobre los sensores del dispositivo
+                Object.keys(device).forEach((param) => {
+                    // Crear un mini-frame para cada sensor
+                    if (param !== 'id' && param !== 'IP' && param !== 'port') {
+                        const miniFrame = document.createElement("div");
+                        miniFrame.classList.add("mini-frame");
+                        // Crear el texto para el nombre del sensor
+                        const label = document.createElement("span");
+                        
+                        label.textContent = `${param} `;
+                        miniFrame.appendChild(label);
+                        const circle = document.createElement("div");
+                        circle.classList.add("circle");
+                        circle.id = `circle-${param}-${device['id']}`;  // ID único para cada sensor
+
+                        miniFrame.appendChild(circle);
+                        statusDiv.appendChild(miniFrame);
+
+                    } else if (param === '') {
+
+                    }
+
+                    
+
+                    // // Crear el círculo de estado
+                    // const circle = document.createElement("div");
+                    // circle.classList.add("circle");
+                    // circle.id = `circle-${param}-${index + 1}`;  // ID único para cada sensor
+                    // miniFrame.appendChild(circle);
+
+                    // Agregar el mini-frame al contenedor de estado
+                });
+
+                // Añadir el estado de sensores al frame
+                frame.appendChild(statusDiv);
+                // Añadir el frame al contenedor
+                container.appendChild(frame);
+            });
+        }
+
+        function updateData() {
+            try {
+                setInterval(async function () {
+                    // Realizar una solicitud GET al script poll_data.py
+                    const response = await fetch('/cgi-bin/poll_data.py');
+                    
+                    // Verificar si la respuesta es exitosa
+                    if (!response.ok) {
+                        throw new Error('Error al obtener los datos');
+                    }
+
+                    // Obtener los datos en formato JSON
+                    const data = await response.json();
+
+                    // Procesar los datos obtenidos (puedes pasarlos a la función para actualizar la página)
+                    console.log(data); // Mostrar los datos en la consola para depuración
+
+                    // Llamar a createFrames para generar los frames según los datos recibidos
+                    createFrames(data);
+
+                    // Iterar sobre las habitaciones y dispositivos
+                    Object.keys(data).forEach((roomName) => {
+                        const device = data[roomName][0];
+
+                        // Procesar cada dispositivo en la habitación
+                        // Iterar sobre los sensores del dispositivo
+                        Object.keys(device).forEach((param) => {
+                            if (param !== 'id' && param !== 'IP' && param !== 'port') {
+                                const sensorValue = device[param];
+
+                                // Actualizar el estado del sensor
+                                const circle = document.getElementById(`circle-${param}-${device['id']}`);
+                                if (circle) {
+                                    if (sensorValue === 1) {
+                                        circle.classList.add("green");  // Sensor activado
+                                    } else {
+                                        circle.classList.remove("green");  // Sensor desactivado
+                                    }
+                                }
+                            }
+                            
+                            
+                        });
+                    });
+                }, 300);
+            } catch (error) {
+                console.error("Hubo un problema con la solicitud:", error);
+            }
+        }
+
+
+
+
+
+        window.onload = function() {
+            // Obtén el valor de "id", "c" y "nBoards" desde la URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            const c = urlParams.get('c');
+            const nBoards = parseInt(urlParams.get('nBoards'), 10) || 0;
+
+
+            // Verifica si "c" no es igual a 1 y redirige si es necesario
+            if (c !== "1") {
+                // Obtén la URL actual
+                const currentURL = window.location.href;
+
+                // Construye la URL para llamar a check.py con los parámetros "id" y "url"
+                const checkURL = `/cgi-bin/check.py?id=${id}&url=${currentURL}`;
+
+                // Redirige a check.py
+                window.location.href = checkURL;
+                console.log("Certified!");
+                return;
+            }
+
+            updateData()
+
+        };
+    </script>
+
+</body>
+</html>

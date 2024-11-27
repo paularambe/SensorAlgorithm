@@ -1,0 +1,182 @@
+/* CSS VARIABLES */
+:root {
+  --primary: #141414;
+  --light: #F3F3F3;
+  --dark: #686868;
+  --gold: #DAA520; /* Tonos dorados cálidos */
+  --wood: #8B4513; /* Aspecto de madera */
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--primary);
+  color: var(--light);
+  font-family: Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+/* CSS VARIABLES */
+/* ... (tu código CSS existente) */
+.link {
+  padding: 50px;
+}
+
+.sub-links ul {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.sub-links a {
+  color: var(--dark);
+  text-decoration: none;
+}
+
+.sub-links a:hover {
+  color: var(--dark);
+  text-decoration: underline;
+}
+
+
+
+.content {
+  min-height: 100%;
+  position: relative;
+}
+
+/* Aplica estilos al footer */
+/* Aplica el mismo color de fondo que el fondo de la página al footer */
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  background-color: transparent; /* Establece el mismo color de fondo que el fondo de la página */
+  color: var(--dark); /* Cambia el color del texto del footer si es necesario */
+}
+
+
+.container {
+  text-align: center;
+  padding: 20px;
+  background-color: transparent;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+h2 {
+  color: var(--dark);
+}
+
+/* Estilo para el campo de entrada de imagen */
+input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--dark);
+  border-radius: 3px;
+  background-color: var(--primary);
+  color: var(--light);
+}
+
+/* Estilo para el botón Login y Register */
+.button-container input[type="submit"] {
+  background-color: var(--dark);
+  color: var(--primary);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background-color 0.3s;
+}
+
+.name-fields {
+    display: flex;
+    align-items: center;
+}
+
+.name-fields label {
+    margin-right: 10px; /* Opcional: Espacio entre las etiquetas y los campos */
+}
+
+
+
+.input-container {
+  margin: 10px 0;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--dark);
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--dark);
+  border-radius: 3px;
+  margin-bottom: 20px; 
+  color: var(--dark);
+}
+
+
+
+input[type="submit"] {
+  background-color: var(--dark); /* Color de madera */
+  color: var(--primary); /* Texto en tono dorado */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-bottom: 20px; 
+  transition: background-color 0.3s;
+}
+
+form {
+  margin-bottom: 20px; /* Añade un margen inferior de 20px a los formularios */
+}
+
+#elementoParaOcultar {
+  display: none;
+}
+
+
+
+input[type="submit"]:hover {
+  background-color: var(--dark);
+  margin-bottom: 20px; 
+  color: var(--light);
+}
+
+.text {
+  color: var(--dark);
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+.enter-button {
+  background-color: var(--dark); /* Color de madera */
+  color: var(--light); /* Texto en tono dorado */
+  padding: 10px 20px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.enter-button:hover {
+  background-color: var(--light);
+  color: var(--light);
+}
+
+

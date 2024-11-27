@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Error</title>
+    <link rel="stylesheet" type="text/css" href="stylessesion.css">
+</head>
+<body>
+    <header>
+        <div class="netflixLogo">
+            <a id="logo"><img src="logo_poly.png" alt="Logo Image"></a>
+        </div>
+    </header>
+    <div class="container">
+        <div class="error-message">
+            <p>Please Login first!</p>
+        </div>
+        <div class="button-container">
+            <input id="login" type="submit" value="Back" onclick="redirectToLogin()">
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy PolyFlix, Inc.</p>
+        <a href="https://www.facebook.com/profile.php?id=61553077526033&is_tour_dismissed=true"><i class="fab fa-facebook-square fa-2x logo" style="color: var(--dark);"></i></a>
+        <a href="https://www.instagram.com/pol.yflix/"><i class="fab fa-instagram fa-2x logo" style="color: var(--dark);"></i></a>
+        <a href="https://twitter.com/polyflix"><i class="fab fa-twitter fa-2x logo" style="color: var(--dark);"></i></a>
+        <a href="https://youtube.com/@PolyFlix?si=leBztwkdjZxI9sJg"><i class="fab fa-youtube fa-2x logo" style="color: var(--dark);"></i></a>
+        <p>Paul Aramberri Araiz &copy 2023</p>
+    </footer>
+
+    <script>
+        function redirectToLogin() {
+            window.location.href = "http://192.168.2.24/login.html";
+        }
+    </script>
+</body>
+</html>

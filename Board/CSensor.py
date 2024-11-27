@@ -1,5 +1,5 @@
 from machine import ADC, Pin
-
+import random
 # Configurar el pin GPIO21 como entrada
 
 # Bucle para leer continuamente el estado del pin
@@ -12,7 +12,10 @@ class CSensor():
         if nombre == "Photoresistor":
             self.sensor=ADC(Pin(pin))
         elif nombre == "Movement":
-            self.sensor = Pin(21, Pin.IN)
+            self.sensor = Pin(pin, Pin.IN)
+        elif nombre == "Button":
+            self.sensor = Pin(pin, Pin.IN, Pin.PULL_UP)
+
 
         self.pin=pin
         self.rawVal=0
@@ -28,8 +31,15 @@ class CSensor():
                 self.rawVal = 1
             else:
                 self.rawVal = 0
-        if self.name=="Movement":
+        elif self.name=="Movement":
             self.rawVal = self.sensor.value()  # Leer el valor digital del pin (0 o 1)
+            
+        elif self.name == "Button":
+            if self.sensor.value()==1:
+                self.rawVal = 0
+            else:
+                self.rawVal = 1
+            
         return self.rawVal
     
     def get_json(self):

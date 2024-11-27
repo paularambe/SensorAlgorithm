@@ -1,0 +1,1 @@
+El archivo docuDinamic.html carga videos DASH dinamicamente. Hay que cambiarlo a docu.html para poder verlo en la pag Web (ya que el resto de archivos referencian a docu.html) el docu actual ,que es capaz de reproducir tres calidades DASH, se puede guardar como backup.
