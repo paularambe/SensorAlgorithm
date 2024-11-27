@@ -72,52 +72,53 @@ ip = wlan.ifconfig()[0]
 remoteAdd = '192.168.2.24'  # Dirección IP de tu servidor
 port = 138  # Puerto del servidor
 # Configuración de la placa
-name = "RoomPaul"
+name = "Kitchen"
 sensors = [CSensor("Button", 0)]
 # sensors.append(CSensor("Movement", 21))
 thisBoard = CESP32(name, ip, port, remoteAdd,sensors)
 
 # Clave para autenticación
 key = "U3%ZhnN+S]m1H6iQFfg<jTfDDLs4R2"
+while True:
 
-try:
-    # Conectar al servidor
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((remoteAdd, port))
+    try:
+        # Conectar al servidor
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((remoteAdd, port))
 
-    print("Enviando clave al servidor...")
-    s.send(key.encode('utf-8'))
+        print("Enviando clave al servidor...")
+        s.send(key.encode('utf-8'))
 
-    # Recibir ACK
-    msgIn = s.recv(1024).decode('utf-8')
-    if msgIn == f"ACK: {key}":
-        print("Conexión establecida con éxito.")
-        msgOut="ACK"
-        s.send(msgOut.encode('utf-8'))
+        # Recibir ACK
         msgIn = s.recv(1024).decode('utf-8')
-        newPort=int(msgIn)
-        thisBoard.PORT=newPort
+        if msgIn == f"ACK: {key}":
+            print("Conexión establecida con éxito.")
+            msgOut="ACK"
+            s.send(msgOut.encode('utf-8'))
+            msgIn = s.recv(1024).decode('utf-8')
+            newPort=int(msgIn)
+            thisBoard.PORT=newPort
 
-        # Enviar datos JSON
-        data_out = {
-            "name": thisBoard.name,
-            "IP": thisBoard.IP,
-            "PORT": thisBoard.PORT,
-            "remoteIP": thisBoard.remoteADD,
-            "sensors": [sensor.get_json() for sensor in sensors],
-        }
+            # Enviar datos JSON
+            data_out = {
+                "name": thisBoard.name,
+                "IP": thisBoard.IP,
+                "PORT": thisBoard.PORT,
+                "remoteIP": thisBoard.remoteADD,
+                "sensors": [sensor.get_json() for sensor in sensors],
+            }
 
-        mensaje = json.dumps(data_out)
-        s.send(mensaje.encode('utf-8'))
-        print("Datos enviados:", mensaje)
-        print("Cerrando puerto...")
-        s.close()
+            mensaje = json.dumps(data_out)
+            s.send(mensaje.encode('utf-8'))
+            print("Datos enviados:", mensaje)
+            print("Cerrando puerto...")
+            s.close()
 
-        poll_task()
+            poll_task()
 
-    else:
-        print("Clave incorrecta. No se pudo conectar.")
-except Exception as e:
-    print(f"Error en el cliente: {e}")
-finally:
-    pass
+        else:
+            print("Clave incorrecta. No se pudo conectar.")
+    except Exception as e:
+        pass
+    finally:
+        pass

@@ -15,6 +15,15 @@
             font-family: Arial, sans-serif;
         }
 
+        #frames-container {
+            display: flex; /* Alinea los frames en una fila */
+            flex-wrap: wrap; /* Permite que los frames pasen a una nueva fila si no caben */
+            gap: 20px; /* Espacio entre los frames */
+            justify-content: center; /* Centra los frames horizontalmente */
+            align-items: flex-start; /* Alinea los frames verticalmente en la parte superior */
+        }
+
+
         .frame {
             border: 1px solid black;
             background-color: #6a6a6a; /* Frame gris claro */
