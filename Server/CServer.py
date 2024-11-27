@@ -9,16 +9,7 @@ import sys
 from CSensor import CSensor
 from CESP32 import CESP32
 
-def find_available_port(start=1024, end=65535):
 
-    for port in range(start, end + 1):
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            try:
-                s.bind(('', port))  # Prueba enlazar el puerto
-                return port
-            except OSError:
-                continue  # Si el puerto está en uso, prueba el siguiente
-    return None  # Si no hay puertos disponibles
 
 
 
@@ -29,9 +20,24 @@ class CServer:
         self.conBoards = []
         self.threadConnect = threading.Thread(target=self.connect_task)
         self.threadConnect.start()
+        self.usedPorts = []
 
         self.threadPoll = threading.Thread(target=self.poll_task)
         self.threadPoll.start()
+
+    def find_available_port(self,start=1024, end=65535):
+
+        for port in range(start, end + 1):
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                try:
+                    s.bind(('', port))  # Prueba enlazar el puerto
+                    if not (port in self.usedPorts):
+                        self.usedPorts.append(port)
+                        return port
+                except OSError:
+                    continue  # Si el puerto está en uso, prueba el siguiente
+        
+        return None  # Si no hay puertos disponibles
 
 
     def poll_task(self):
@@ -147,7 +153,7 @@ class CServer:
                     # Recibir datos JSON
                     data = conn.recv(1024).decode('utf-8')
                     if data=="ACK":
-                        newPort=find_available_port()
+                        newPort=self.find_available_port()
                         msgOut=str(newPort)
                         conn.send(msgOut.encode('utf-8'))
 
