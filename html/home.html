@@ -156,13 +156,23 @@
                         // Crear el texto para el nombre del sensor
                         const label = document.createElement("span");
                         
-                        label.textContent = `${param} `;
-                        miniFrame.appendChild(label);
-                        const circle = document.createElement("div");
-                        circle.classList.add("circle");
-                        circle.id = `circle-${param}-${device['id']}`;  // ID único para cada sensor
+                        
+                        if (param=='Temperature'){
+                            label.textContent = `${param}: ${device[param]} ºC`;
+                            miniFrame.appendChild(label);
+                        } else if (param=='Humidity'){
+                            label.textContent = `${param}: ${device[param]} %`;
+                            miniFrame.appendChild(label);
+                        } else {
+                            label.textContent = `${param} `;
+                            miniFrame.appendChild(label);
+                            const circle = document.createElement("div");
+                            circle.classList.add("circle");
+                            circle.id = `circle-${param}-${device['id']}`;  // ID único para cada sensor
 
-                        miniFrame.appendChild(circle);
+                            miniFrame.appendChild(circle);
+                        }
+                        
                         statusDiv.appendChild(miniFrame);
 
                     } else if (param === '') {

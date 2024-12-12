@@ -72,8 +72,10 @@ ip = wlan.ifconfig()[0]
 remoteAdd = '192.168.2.24'  # Dirección IP de tu servidor
 port = 138  # Puerto del servidor
 # Configuración de la placa
-name = "Kitchen"
-sensors = [CSensor("Button", 0)]
+name = "BoardPablo"
+sensors = [CSensor("Humidity", 26)]
+sensors.append(CSensor("Temperature", 26))
+sensors.append(CSensor("Photoresistor", 36))
 # sensors.append(CSensor("Movement", 21))
 thisBoard = CESP32(name, ip, port, remoteAdd,sensors)
 
