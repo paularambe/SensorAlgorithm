@@ -104,6 +104,8 @@
             const container = document.getElementById("frames-container");
 
 
+            container.innerHTML = '';
+
 
             if (!videoFrameCreated) {
                 // Crea el contenedor del video solo una vez
@@ -116,9 +118,9 @@
                 const videoFrame = document.createElement("iframe");
                 videoFrame.src = `http://192.168.2.223/240x240.mjpeg`;
                 videoFrame.title = `Video de CuartoJuan`;
-                videoFrame.style.width = "240px";
-                videoFrame.style.height = "240px";
-                videoFrame.style.border = "20px";
+                videoFrame.style.width = "480px";
+                videoFrame.style.height = "480px";
+                videoFrame.style.border = "none";
                 videoFrame.style.borderRadius = "10px";
                 videoFrame.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
 
